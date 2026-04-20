@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tesorería - Acceso</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .auth-tabs {
+      display: flex;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-bottom: 28px;
+    }
+    .auth-tab {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      font-size: .88rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: #f3f4f6;
+      color: var(--muted);
+      border: none;
+      font-family: inherit;
+      transition: all .2s;
+    }
+    .auth-tab.activo {
+      background: var(--primary);
+      color: #fff;
+    }
+    .auth-tab:hover:not(.activo) { background: #e5e7eb; }
+    #formRegistro { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="login-container">
+  <div class="login-card">
+
+    <div class="login-logo">
+      <span class="icono">💰</span>
+      <h1>Tesorería</h1>
+      <p>Control de Pagos y Feligreses</p>
+    </div>
+
+    <!-- TABS -->
+    <div class="auth-tabs">
+      <button class="auth-tab activo" id="tabLogin" onclick="mostrarLogin()">
+        🔑 Ingresar
+      </button>
+      <button class="auth-tab" id="tabRegistro" onclick="mostrarRegistro()">
+        ✏️ Registrarse
+      </button>
+    </div>
+
+    <!-- FORMULARIO LOGIN -->
+    <div id="formLogin">
+      <label class="lbl">Correo electrónico</label>
+      <input type="email" id="email" placeholder="admin@iglesia.com"
+             onkeydown="if(event.key==='Enter')login()">
+
+      <label class="lbl" style="margin-top:14px">Contraseña</label>
+      <input type="password" id="password" placeholder="••••••••"
+             onkeydown="if(event.key==='Enter')login()">
+
+      <button class="btn btn-primary"
+              style="width:100%;justify-content:center;margin-top:20px;"
+              onclick="login()">
+        Ingresar →
+      </button>
+    </div>
+
+    <!-- FORMULARIO REGISTRO -->
+    <div id="formRegistro">
+      <label class="lbl">Correo electrónico</label>
+      <input type="email" id="regEmail" placeholder="nuevo@iglesia.com"
+             onkeydown="if(event.key==='Enter')registrar()">
+
+      <label class="lbl" style="margin-top:14px">Contraseña</label>
+      <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres"
+             onkeydown="if(event.key==='Enter')registrar()">
+
+      <button class="btn btn-primary" id="btnRegistrar"
+              style="width:100%;justify-content:center;margin-top:20px;"
+              onclick="registrar()">
+        ✅ Crear Cuenta
+      </button>
+    </div>
+
+    <div class="error-msg" id="errorMsg"></div>
+
+  </div>
+</div>
+
+<footer>Iglesia Pentecostal Unida de Colombia</footer>
+
+<script type="module" src="auth.js"></script>
+</body>
+</html>

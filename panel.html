@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tesorería - Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div>
+    <h1>💰 Tesorería</h1>
+    <p id="userEmail">Cargando...</p>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-success" onclick="exportarExcel()">📊 Exportar Excel</button>
+    <button class="btn btn-secondary" onclick="cerrarSesion()">Salir →</button>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- RESUMEN -->
+  <div class="resumen-grid">
+    <div class="res-card azul">
+      <div class="icono">🗳️</div>
+      <div class="etiqueta">Total Votos</div>
+      <div class="valor" id="totalRegistrados">0</div>
+      <div class="sub"   id="subRegistrados">votos</div>
+    </div>
+    <div class="res-card verde">
+      <div class="icono">✅</div>
+      <div class="etiqueta">Total Recaudado</div>
+      <div class="valor" id="totalRecaudado">$0</div>
+      <div class="sub"   id="subPagados">0 pagaron</div>
+    </div>
+    <div class="res-card rojo">
+      <div class="icono">⏳</div>
+      <div class="etiqueta">Pendiente por Cobrar</div>
+      <div class="valor" id="totalPendiente">$0</div>
+      <div class="sub"   id="subPendientes">0 pendientes</div>
+    </div>
+    <div class="res-card amarillo">
+      <div class="icono">💵</div>
+      <div class="etiqueta">Total Anotado</div>
+      <div class="valor" id="totalAnotado">$0</div>
+      <div class="sub">todos los votos</div>
+    </div>
+  </div>
+
+  <!-- FORMULARIO REGISTRO VOTO -->
+  <div class="card">
+    <h2>🗳️ Registrar Voto</h2>
+    <div class="form-grid">
+
+      <!-- Selector tipo de voto -->
+      <div class="form-group full">
+        <div class="tipo-voto-tabs">
+          <button class="tipo-tab activo" id="tabPersonal" onclick="setTipoVoto('personal')">
+            👤 Voto Personal
+          </button>
+          <button class="tipo-tab" id="tabDirectiva" onclick="setTipoVoto('directiva')">
+            🏛️ Voto de Directiva
+          </button>
+        </div>
+      </div>
+
+      <!-- Campo nombre (personal) -->
+      <div class="form-group full" id="campoNombre">
+        <label class="lbl">👤 Nombre Completo</label>
+        <input type="text" id="nombre" placeholder="Ej: Juan Carlos Pérez">
+      </div>
+
+      <!-- Campo directiva (solo si es directiva) -->
+      <div class="form-group full" id="campoDirectiva" style="display:none">
+        <label class="lbl">🏛️ Nombre de la Directiva</label>
+        <input type="text" id="directiva" placeholder="Ej: Junta local...">
+      </div>
+
+      <!-- Valor -->
+      <div class="form-group full">
+        <label class="lbl">💵 Valor del Voto</label>
+        <input type="text" id="valor" placeholder="Ej: 50000" inputmode="numeric">
+      </div>
+
+      <!-- ¿Ya pagó? -->
+      <div class="form-group full">
+        <label class="check-row" id="checkPagRow" onclick="togglePagado()">
+          <input type="checkbox" id="yaPago" onclick="event.stopPropagation();togglePagado()">
+          <span id="checkPagLabel">¿Ya realizó el pago?</span>
+        </label>
+      </div>
+
+      <div class="actions full">
+        <button class="btn btn-primary" onclick="guardarFeligres()">💾 Guardar</button>
+        <button class="btn btn-secondary" onclick="limpiarForm()">✖ Limpiar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LISTA -->
+  <div class="card">
+    <div class="lista-header">
+      <h2 style="margin:0">🗳️ Lista de Votos</h2>
+      <div class="search-wrap">
+        <input class="search-input" id="busqueda" placeholder="Buscar por nombre..." oninput="renderLista()">
+      </div>
+    </div>
+
+    <div class="filtros">
+      <button class="filtro-btn activo" onclick="setFiltro('todos',this)">📊 Todos</button>
+      <button class="filtro-btn"        onclick="setFiltro('pagados',this)">✅ Pagaron</button>
+      <button class="filtro-btn"        onclick="setFiltro('pendientes',this)">⏳ Pendientes</button>
+      <button class="filtro-btn"        onclick="setFiltro('directiva',this)">🏛️ Directiva</button>
+      <button class="filtro-btn"        onclick="setFiltro('personal',this)">👤 Personal</button>
+    </div>
+
+    <div class="lista" id="listaFeligreses">
+      <div class="empty">
+        <div class="empty-icon">⏳</div>
+        <p>Cargando votos...</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>Iglesia Pentecostal Unida de Colombia — Sistema de Tesorería</footer>
+
+<!-- MODAL EDITAR -->
+<div class="modal-overlay" id="modalOverlay" style="display:none" onclick="cerrarModal(event)">
+  <div class="modal">
+    <h3>✏️ Editar Voto</h3>
+    <input type="hidden" id="editId">
+
+    <!-- Selector tipo en modal -->
+    <div class="form-group">
+      <div class="tipo-voto-tabs">
+        <button class="tipo-tab" id="editTabPersonal" onclick="setEditTipo('personal')">
+          👤 Personal
+        </button>
+        <button class="tipo-tab" id="editTabDirectiva" onclick="setEditTipo('directiva')">
+          🏛️ Directiva
+        </button>
+      </div>
+    </div>
+
+    <!-- Nombre (personal) -->
+    <div class="form-group" id="editCampoNombre">
+      <label class="lbl">👤 Nombre Completo</label>
+      <input type="text" id="editNombre" placeholder="Nombre completo">
+    </div>
+
+    <!-- Directiva -->
+    <div class="form-group" id="editCampoDirectiva" style="display:none">
+      <label class="lbl">🏛️ Nombre de la Directiva</label>
+      <input type="text" id="editDirectiva" placeholder="Nombre de la directiva">
+    </div>
+
+    <div class="form-group">
+      <label class="lbl">💵 Valor del Voto</label>
+      <input type="text" id="editValor" placeholder="50000" inputmode="numeric">
+    </div>
+
+    <div class="form-group">
+      <label class="check-row" id="editPagRow" onclick="toggleEditPago()">
+        <input type="checkbox" id="editPagado" onclick="event.stopPropagation();toggleEditPago()">
+        <span id="editPagLabel">¿Ya realizó el pago?</span>
+      </label>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn btn-primary"   onclick="guardarEdicion()">💾 Guardar Cambios</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module" src="app.js"></script>
+<script type="module" src="exportar.js"></script>
+</body>
+</html>
