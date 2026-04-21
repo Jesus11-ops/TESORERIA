@@ -11,11 +11,12 @@
 <!-- HEADER -->
 <header>
   <div>
-    <h1>💰 Tesorería</h1>
+    <h1>🏕️ Retiro</h1>
     <p id="userEmail">Cargando...</p>
   </div>
   <div class="header-right">
     <button class="btn btn-success" onclick="exportarExcel()">📊 Exportar Excel</button>
+    <a href="inicio.html" class="btn btn-secondary">← Inicio</a>
     <button class="btn btn-secondary" onclick="cerrarSesion()">Salir →</button>
   </div>
 </header>
@@ -25,10 +26,10 @@
   <!-- RESUMEN -->
   <div class="resumen-grid">
     <div class="res-card azul">
-      <div class="icono">🗳️</div>
-      <div class="etiqueta">Total Votos</div>
+      <div class="icono">👥</div>
+      <div class="etiqueta">Total Registrados</div>
       <div class="valor" id="totalRegistrados">0</div>
-      <div class="sub"   id="subRegistrados">votos</div>
+      <div class="sub"   id="subRegistrados">personas</div>
     </div>
     <div class="res-card verde">
       <div class="icono">✅</div>
@@ -46,16 +47,16 @@
       <div class="icono">💵</div>
       <div class="etiqueta">Total Anotado</div>
       <div class="valor" id="totalAnotado">$0</div>
-      <div class="sub">todos los votos</div>
+      <div class="sub">todos los registros</div>
     </div>
   </div>
 
-  <!-- FORMULARIO REGISTRO VOTO -->
+  <!-- FORMULARIO REGISTRO -->
   <div class="card">
     <h2>🗳️ Registrar Voto</h2>
     <div class="form-grid">
 
-      <!-- Selector tipo de voto -->
+      <!-- TABS tipo voto -->
       <div class="form-group full">
         <div class="tipo-voto-tabs">
           <button class="tipo-tab activo" id="tabPersonal" onclick="setTipoVoto('personal')">
@@ -67,25 +68,23 @@
         </div>
       </div>
 
-      <!-- Campo nombre (personal) -->
-      <div class="form-group full" id="campoNombre">
+      <!-- Campo nombre personal -->
+      <div class="form-group" id="campoNombre">
         <label class="lbl">👤 Nombre Completo</label>
         <input type="text" id="nombre" placeholder="Ej: Juan Carlos Pérez">
       </div>
 
-      <!-- Campo directiva (solo si es directiva) -->
-      <div class="form-group full" id="campoDirectiva" style="display:none">
+      <!-- Campo directiva -->
+      <div class="form-group" id="campoDirectiva" style="display:none">
         <label class="lbl">🏛️ Nombre de la Directiva</label>
         <input type="text" id="directiva" placeholder="Ej: Junta local...">
       </div>
 
-      <!-- Valor -->
-      <div class="form-group full">
+      <div class="form-group">
         <label class="lbl">💵 Valor del Voto</label>
         <input type="text" id="valor" placeholder="Ej: 50000" inputmode="numeric">
       </div>
 
-      <!-- ¿Ya pagó? -->
       <div class="form-group full">
         <label class="check-row" id="checkPagRow" onclick="togglePagado()">
           <input type="checkbox" id="yaPago" onclick="event.stopPropagation();togglePagado()">
@@ -103,7 +102,7 @@
   <!-- LISTA -->
   <div class="card">
     <div class="lista-header">
-      <h2 style="margin:0">🗳️ Lista de Votos</h2>
+      <h2 style="margin:0">📋 Lista de Personas</h2>
       <div class="search-wrap">
         <input class="search-input" id="busqueda" placeholder="Buscar por nombre..." oninput="renderLista()">
       </div>
@@ -114,13 +113,12 @@
       <button class="filtro-btn"        onclick="setFiltro('pagados',this)">✅ Pagaron</button>
       <button class="filtro-btn"        onclick="setFiltro('pendientes',this)">⏳ Pendientes</button>
       <button class="filtro-btn"        onclick="setFiltro('directiva',this)">🏛️ Directiva</button>
-      <button class="filtro-btn"        onclick="setFiltro('personal',this)">👤 Personal</button>
     </div>
 
     <div class="lista" id="listaFeligreses">
       <div class="empty">
         <div class="empty-icon">⏳</div>
-        <p>Cargando votos...</p>
+        <p>Cargando personas...</p>
       </div>
     </div>
   </div>
@@ -135,36 +133,33 @@
     <h3>✏️ Editar Voto</h3>
     <input type="hidden" id="editId">
 
-    <!-- Selector tipo en modal -->
-    <div class="form-group">
+    <div class="form-group" style="margin-bottom:14px">
       <div class="tipo-voto-tabs">
-        <button class="tipo-tab" id="editTabPersonal" onclick="setEditTipo('personal')">
-          👤 Personal
+        <button class="tipo-tab activo" id="editTabPersonal" onclick="setEditTipo('personal')">
+          👤 Voto Personal
         </button>
         <button class="tipo-tab" id="editTabDirectiva" onclick="setEditTipo('directiva')">
-          🏛️ Directiva
+          🏛️ Voto de Directiva
         </button>
       </div>
     </div>
 
-    <!-- Nombre (personal) -->
     <div class="form-group" id="editCampoNombre">
       <label class="lbl">👤 Nombre Completo</label>
       <input type="text" id="editNombre" placeholder="Nombre completo">
     </div>
 
-    <!-- Directiva -->
     <div class="form-group" id="editCampoDirectiva" style="display:none">
       <label class="lbl">🏛️ Nombre de la Directiva</label>
       <input type="text" id="editDirectiva" placeholder="Nombre de la directiva">
     </div>
 
-    <div class="form-group">
-      <label class="lbl">💵 Valor del Voto</label>
+    <div class="form-group" style="margin-top:10px">
+      <label class="lbl">💵 Valor</label>
       <input type="text" id="editValor" placeholder="50000" inputmode="numeric">
     </div>
 
-    <div class="form-group">
+    <div class="form-group" style="margin-top:10px">
       <label class="check-row" id="editPagRow" onclick="toggleEditPago()">
         <input type="checkbox" id="editPagado" onclick="event.stopPropagation();toggleEditPago()">
         <span id="editPagLabel">¿Ya realizó el pago?</span>
